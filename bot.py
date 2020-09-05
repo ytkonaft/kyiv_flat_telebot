@@ -1,7 +1,7 @@
 import telebot
 import requests
 from config import TOKEN, URL
-from constants import PRICE_FROM, PRICE_TO, ROOMS
+from constants import PRICE_FROM, PRICE_TO, ROOMS_FROM, ROOMS_TO
 from bs4 import BeautifulSoup as BS
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -13,7 +13,8 @@ defaultUserState = {
   "step": 'init',
   "priceMin": 1,
   "priceMax": 80000,
-  "rooms": 1
+  "roomsFrom": 1,
+  "roomsTo": 4
 }
 
 @bot.message_handler(func=lambda message: True)
@@ -36,9 +37,12 @@ def stateMachine(message, user):
   elif text.startswith('/to'):
     user['step'] = PRICE_TO
     bot.send_message(message.chat.id, "Введите максимальную цену")
-  elif text =='/rooms':
-    user['step'] = ROOMS
-    bot.send_message(message.chat.id, "Введите количество комнат")
+  elif text =='/roomsfrom':
+    user['step'] = ROOMS_FROM
+    bot.send_message(message.chat.id, "Введите минимальное количество комнат")
+  elif text =='/roomsto':
+    user['step'] = ROOMS_TO
+    bot.send_message(message.chat.id, "Введите максимальное количество комнат")
   elif text =='/params':
     bot.send_message(message.chat.id, getParamsMessage(user))
   elif user['step'] == PRICE_FROM:
@@ -49,10 +53,14 @@ def stateMachine(message, user):
     price = message.text.strip()
     user['priceMax'] = price
     bot.send_message(message.chat.id, f"Максимальная цена: {price}")
-  elif user['step'] == ROOMS:
+  elif user['step'] == ROOMS_FROM:
     rooms = message.text.strip()
-    user['rooms'] = rooms
-    bot.send_message(message.chat.id, f"Установлено комнат: {rooms}")
+    user['roomsFrom'] = rooms
+    bot.send_message(message.chat.id, f"Установлено от {rooms} комнат")
+  elif user['step'] == ROOMS_FROM:
+    rooms = message.text.strip()
+    user['roomsTo'] = rooms
+    bot.send_message(message.chat.id, f"Установлено до {rooms} комнат")
   else:
     bot.send_message(message.chat.id, getHelpMessage())
 
@@ -61,19 +69,21 @@ def getParamsMessage(user):
   return f"Параметры поиска \n" \
          f"Цена от: {user['priceMin']}\n" \
          f"Цена до: {user['priceMax']}\n" \
-         f"Количество комнат: {user['rooms']}"
+         f"Количество комнат от {user['roomsFrom']} до {user['roomsTo']}"
 
 def getHelpMessage():
   return f"Доступные команты: \n" \
          f"/from \n" \
          f"/to \n" \
-         f"/rooms \n" \
+         f"/roomsfrom \n" \
+         f"/roomsto \n" \
          f"/params \n" \
          f"/go \n"
 
 def getParams(user):
   return {
-  'search[filter_float_number_of_rooms:from]': user["rooms"],
+  'search[filter_float_number_of_rooms:from]': user["roomsFrom"],
+  'search[filter_float_number_of_rooms:to]': user["roomsTo"],
   'search[filter_float_price:from]': user["priceMin"],
   'search[filter_float_price:to]': user["priceMax"],
   'search[order]': 'created_at'
