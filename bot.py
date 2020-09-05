@@ -38,25 +38,33 @@ def stateMachine(message, user):
     bot.send_message(message.chat.id, "Введите максимальную цену")
   elif text =='/rooms':
     user['step'] = ROOMS
-    bot.send_message(message.chat.id, "Введите минимальную цену")
+    bot.send_message(message.chat.id, "Введите количество комнат")
+  elif text =='/params':
+    bot.send_message(message.chat.id, getParamsMessage(user))
   elif user['step'] == PRICE_FROM:
     price = message.text.strip()
     user['priceMin'] = price
-    bot.send_message(message.chat.id, f"Минимальная цена {price}")
+    bot.send_message(message.chat.id, f"Минимальная цена: {price}")
   elif user['step'] == PRICE_TO:
     price = message.text.strip()
     user['priceMax'] = price
-    bot.send_message(message.chat.id, f"Максимальная цена {price}")
+    bot.send_message(message.chat.id, f"Максимальная цена: {price}")
   elif user['step'] == ROOMS:
     rooms = message.text.strip()
     user['rooms'] = rooms
-    bot.send_message(message.chat.id, f"Установлено комнат {rooms}")
+    bot.send_message(message.chat.id, f"Установлено комнат: {rooms}")
   else:
-    bot.send_message(message.chat.id, getHelp())
+    bot.send_message(message.chat.id, getHelpMessage())
 
 
-def getHelp():
-  return f"Available commands: \n" \
+def getParamsMessage(user):
+  return f"Параметры поиска \n" \
+         f"Цена от: {user['priceMin']}\n" \
+         f"Цена до: {user['priceMax']}\n" \
+         f"Количество комнат: {user['rooms']}"
+
+def getHelpMessage():
+  return f"Доступные команты: \n" \
          f"/from \n" \
          f"/to \n" \
          f"/rooms \n" \
