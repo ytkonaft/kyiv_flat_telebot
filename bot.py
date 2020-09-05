@@ -57,7 +57,7 @@ def stateMachine(message, user):
     rooms = message.text.strip()
     user['roomsFrom'] = rooms
     bot.send_message(message.chat.id, f"Установлено от {rooms} комнат")
-  elif user['step'] == ROOMS_FROM:
+  elif user['step'] == ROOMS_TO:
     rooms = message.text.strip()
     user['roomsTo'] = rooms
     bot.send_message(message.chat.id, f"Установлено до {rooms} комнат")
