@@ -11,9 +11,9 @@ bot = telebot.TeleBot(TOKEN)
 
 defaultUserState = {
   "step": 'init',
-  "priceMin": 18000,
-  "priceMax": 21000,
-  "rooms": 3
+  "priceMin": 1,
+  "priceMax": 80000,
+  "rooms": 1
 }
 
 @bot.message_handler(func=lambda message: True)
@@ -68,6 +68,7 @@ def getHelpMessage():
          f"/from \n" \
          f"/to \n" \
          f"/rooms \n" \
+         f"/params \n" \
          f"/go \n"
 
 def getParams(user):
