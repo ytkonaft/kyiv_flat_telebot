@@ -42,11 +42,11 @@ def stateMachine(message, user):
   elif user['step'] == PRICE_FROM:
     price = message.text.strip()
     user['priceMin'] = price
-    bot.send_message(message.chat.id, f"Минимальная цена{price}")
+    bot.send_message(message.chat.id, f"Минимальная цена {price}")
   elif user['step'] == PRICE_TO:
     price = message.text.strip()
     user['priceMax'] = price
-    bot.send_message(message.chat.id, f"Максимальная цена{price}")
+    bot.send_message(message.chat.id, f"Максимальная цена {price}")
   elif user['step'] == ROOMS:
     rooms = message.text.strip()
     user['rooms'] = rooms
